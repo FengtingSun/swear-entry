@@ -1,37 +1,142 @@
-## Welcome to GitHub Pages
+---
+title: "Introducing the Shell"
+teaching: 5
+exercises: 0
+questions:
+- "What is a command shell and why would I use one?"
+objectives:
+- "Explain how the shell relates to the keyboard, the screen, the operating system, and users' programs."
+- "Explain when and why command-line interfaces should be used instead of graphical interfaces."
+keypoints:
+- "Explain the similarities and differences between a file and a directory."
+- "Translate an absolute path into a relative path and vice versa."
+- "Construct absolute and relative paths that identify specific files and directories."
+- "Explain the steps in the shell's read-run-print cycle."
+- "Identify the actual command, flags, and filenames in a command-line call."
+- "Demonstrate the use of tab completion, and explain its advantages."
+keypoints:
+- "A shell is a program whose primary purpose is to read commands and run other programs."
+- "The shell's main advantages are its high action-to-keystroke ratio, its support for automating repetitive tasks, and that it can be used to access networked machines."
+- "The shell's main disadvantages are its primarily textual nature and how cryptic its commands and operation can be."
+---
 
-You can use the [editor on GitHub](https://github.com/FengtingSun/swear-entry/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+At a high level, computers do four things:
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+-   run programs
+-   store data
+-   communicate with each other
+-   and interact with us
 
-### Markdown
+They can do the last of these in many different ways,
+including direct brain-computer and speech interfaces.
+Since these hardware interfaces are still in their infancy,
+we still have to rely on screens, mice, touchpads and keyboards.
+Although most modern desktop operating systems communicate with their human users by
+means of windows, icons and pointers, these software technologies didn't become
+widespread until 1980s. The roots of such *graphical user interfaces*  go back
+to Doug Engelbart's work in the 1960s, which you can see in what has been
+called "[The Mother of All Demos](http://www.youtube.com/watch?v=a11JDLBXtPQ)".
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Going back even further,
+the only way to interact with early computers was to rewire them.
+But in between,
+from the 1950s to the 1980s,
+most people used line printers.
+These devices only allowed input and output of the letters, numbers, and punctuation found on a standard keyboard,
+so programming languages and software interfaces had to be designed around that constraint.
 
-```markdown
-Syntax highlighted code block
+This kind of interface is called a
+**command-line interface**, or CLI,
+to distinguish it from a
+**graphical user interface**, or GUI,
+which most people now use.
+The heart of a CLI is a **read-evaluate-print loop**, or REPL:
+when the user types a command and then presses the Enter (or Return) key,
+the computer reads it,
+executes it,
+and prints its output.
+The user then types another command,
+and so on until the user logs off.
 
-# Header 1
-## Header 2
-### Header 3
+This description makes it sound as though the user sends commands directly to the computer,
+and the computer sends output directly to the user.
+In fact,
+there is usually a program in between called a
+**command shell**.
+What the user types goes into the shell,
+which then figures out what commands to run and orders the computer to execute them.
+(Note that the shell is called "the shell" because it encloses the operating system
+in order to hide some of its complexity and make it simpler to interact with.)
 
-- Bulleted
-- List
+A shell is a program like any other.
+What's special about it is that its job is to run other programs
+rather than to do calculations itself.
+The most popular Unix shell is Bash,
+the Bourne Again SHell
+(so-called because it's derived from a shell written by Stephen Bourne).
+Bash is the default shell on most modern implementations of Unix
+and in most packages that provide Unix-like tools for Windows.
 
-1. Numbered
-2. List
+Using Bash or any other shell
+sometimes feels more like programming than like using a mouse.
+Commands are terse (often only a couple of characters long),
+their names are frequently cryptic,
+and their output is lines of text rather than something visual like a graph.
+On the other hand,
+with only a few keystrokes, the shell allows us to combine existing tools into 
+powerful pipelines and handle large volumes of data automatically. This automation
+not only makes us more productive, but also improves the reproducibility of our workflows by 
+allowing us to repeat them with few simple commands.
+In addition, the command line is often the easiest way to interact with remote machines and supercomputers.
+Familiarity with the shell is near essential to run a variety of specialized tools and resources
+including high-performance computing systems.
+As clusters and cloud computing systems become more popular for scientific data crunching,
+being able to interact with them is becoming a necessary skill.
+We can build on the command-line skills covered here
+to tackle a wide range of scientific questions and computational challenges.
 
-**Bold** and _Italic_ and `Code` text
+## Nelle's Pipeline: Starting Point
 
-[Link](url) and ![Image](src)
-```
+Nelle Nemo, a marine biologist,
+has just returned from a six-month survey of the
+[North Pacific Gyre](http://en.wikipedia.org/wiki/North_Pacific_Gyre),
+where she has been sampling gelatinous marine life in the
+[Great Pacific Garbage Patch](http://en.wikipedia.org/wiki/Great_Pacific_Garbage_Patch).
+She has 1520 samples in all, and now needs to:
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+1.  Run each sample through an assay machine
+    that will measure the relative abundance of 300 different proteins.
+    The machine's output for a single sample is
+    a file with one line for each protein.
+2.  Calculate statistics for each of the proteins separately
+    using a program her supervisor wrote called `goostat`.
+3.  Compare the statistics for each protein
+    with corresponding statistics for each other protein
+    using a program one of the other graduate students wrote called `goodiff`.
+4.  Write up results.
+    Her supervisor would really like her to do this by the end of the month
+    so that her paper can appear in an upcoming special issue of *Aquatic Goo Letters*.
 
-### Jekyll Themes
+It takes about half an hour for the assay machine to process each sample.
+The good news is that
+it only takes two minutes to set each one up.
+Since her lab has eight assay machines that she can use in parallel,
+this step will "only" take about two weeks.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/FengtingSun/swear-entry/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+The bad news is that if she has to run `goostat` and `goodiff` by hand,
+she'll have to enter filenames and click "OK" 46,370 times
+(1520 runs of `goostat`, plus 300*299/2 (half of 300 times 299) runs of `goodiff`).
+At 30 seconds each,
+that will take more than two weeks.
+Not only would she miss her paper deadline,
+the chances of her typing all of those commands right are practically zero.
 
-### Support or Contact
+The next few lessons will explore what she should do instead.
+More specifically,
+they explain how she can use a command shell
+to automate the repetitive steps in her processing pipeline
+so that her computer can work 24 hours a day while she writes her paper.
+As a bonus,
+once she has put a processing pipeline together,
+she will be able to use it again whenever she collects more data.
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
